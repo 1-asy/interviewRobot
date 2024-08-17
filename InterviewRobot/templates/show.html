@@ -1,0 +1,176 @@
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+ <meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>面试机器人-实体识别结果呈现</title>
+ <link href="/static/js/bootstrap.min.css" rel="stylesheet">
+ <link rel="stylesheet" type="text/css" href="/static/js/site.min.css">
+<link type="text/css" rel="stylesheet" href="/static/js/index.css">
+
+
+
+<script src="/static/js/jquery.js"></script>
+<script>
+        $(document).ready(function () {
+            $("#btn").click(function () {
+                var input1 = $("#input1").val();
+                var mode = "词性分析";
+                $.post("/key_word_show/", { 'input1': input1, 'mode': mode}, function (ret) {
+                    console.log(ret)
+                    $('#fenci1').html(ret)
+                })
+            });
+        });
+
+</script>
+
+
+</head>
+
+<body style="zoom: 1;">
+<div class="header" style="background:#000000;min-height: 25px;">
+</div>
+
+
+<div class="container-fluid">
+    <div class="row" style="position:relative;background:#dddee2;padding-bottom:6%;">
+        <h4 style="float:left;">数据导入</h4>
+        <div class="col-md-12 center-block">
+            <div class="col-md-12">
+                <ul class="nav nav-pills" style="margin-left:4%;font-size: 16px;color: #000;line-height: 34px;">
+                    <!-- <li role="presentation"  id=crf2><a  target="_black">数据导入</a></li> -->
+                </ul>
+            </div>
+            <input type="file" name="" id="inp_file" value="文件路径"/>
+            <form action="/key_word_show/" method="post">
+                        <div class="col-md-12 center-block">
+                            <div class="row">
+                                <div class="col-md-11 center-block" style="float:none;padding-left: 0px;padding-right: 0px;">
+                                    <textarea id=input1 class="form-control" rows="16" value="原标题"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 center-block">
+                            <div style="width:8%;float:left;margin-left:46%;margin-top:25px" >
+                                <input type = "text" name= "mood" id =mood value="crf2" style="display:none;" />
+                                <button type="button" id=btn class="btn btn-primary">开始分析</button>
+                            </div>
+                        </div>
+
+                </form>
+        </div>
+    </div>
+    <div class="row" style="background:#ffffff;min-height: 189px;">
+        <!-- <div class="col-md-12" style="margin-top:100px"> -->
+            <div class="row">
+                <div class="col-md-12 pag" id="one">
+                    <!-- <div class="warp col-md-12 center-block " style="float:none"> -->
+
+                        <!--词性标注显示 -->
+                        <div class="col-md-2 tag" id= CiXing style="padding-left: 0px;padding-right: 0px;">
+                            <div>
+                                <h4 style="float:left;">结果呈现</h4>
+                            </div>
+                            <div class="clearfix"></div>
+                            <ul>
+                                    <div class="n20"><a class="on9" >人名</a></div>
+                                    <div class="n23"><a class="on23" >学校</a></div>
+                                    <div class="n21"><a class="on3" >数字</a></div>
+                                    <div class="n12"><a class="on12" >职业</a></div>
+                                    <div class="n13"><a class="on13" >专业</a></div>
+                                    <div class="n14"><a class="on14" >公司</a></div>
+                                    <div class="n19"><a class="on21" >其他</a></div>
+                            </ul>
+                            <div class="col-md-8" >
+                                <div class="text" id=fenci1 style="background:#ffffff;min-height: 300px; min-width: 1800px;"></div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+    </div>
+</div>
+
+</body>
+
+<script type="text/javascript">
+    $('#inp_file').change(function(e){
+        var file_name = $(this).val()
+			// console.log(file_name) //文件路径
+        $.post("/pdf2txt/", { 'file_name': file_name,'mode':0}, function (ret) {
+                    // console.log(ret)
+                    $("#input1").html(ret)
+                })
+        })
+        
+
+</script>
+
+<div class="header" style="background:#000000;min-height: 25px;">
+</div>
+<div class="container-fluid">
+    <div class="row" style="position:relative;background:#dddee2;padding-bottom:1%;">
+        <h4 style="float:left;">面试出题</h4>
+    </div>
+</div>
+<ul>
+    <li>
+	<head>
+		<meta charset="utf-8">
+		<script src="/static/js/jquery.js"></script>
+		<title></title>
+	</head>
+	<body>
+		<div style="width: 100%; text-align: center; background-color: #F2F2F2;">
+            <input type="button" name="" id="getquestion" value="获取题目" class="btn btn-primary" style="margin-bottom: 20px;" onclick="Getq()"/>
+			<div class="content">
+			</div>
+        <div style="width:8%;float:left;margin-left:-20%;margin-top:25px" ></div>
+        <div></div>
+		<input type="button" name="" id="" value="提交" class="btn btn-primary" style="margin-top: 20px;" onclick="Submit()"/>
+	</body>
+	<script type="text/javascript">
+    function Getq(){
+        // var keywords = "['机器学习','ner']"
+        $('.content').html('')
+        $.post("/get_question/", { }, function (ret) {
+                    question = ret
+                    console.log(question)
+                    question = question.split('**')
+                    arr = question
+                    var dom = ''
+            		var num = 1
+		            for(var i=0;i<arr.length;i++){
+		            	dom += '<p>问题' + num + ' : ' + arr[i] + '</p><textarea placeholder="请输入"></textarea>'
+			            num ++
+	            	}
+		            $('.content').append(dom)
+                })
+    }
+		function Submit(){
+			var data = []
+			$(".content textarea").each(function(){
+				data.push($(this).val()+'**')
+			})
+            console.log(data)
+            $.post("/send_answer/", {'answer':data.toString()}, function (ret) {
+                var myDiv=document.getElementById("test");
+                myDiv.innerText="您面试的分数为："+ret;
+                console.log(ret,123456)
+            }
+            )
+			// console.log(data)
+		}
+	</script>
+</li>
+</ul>
+<div style="width: 100%; text-align: center; background-color: #F2F2F2; padding-bottom:2%;padding-top:2%;">
+<label id="test">您面试的分数为：NAN</label>
+</div>
+</html>
+
+<style type="text/css">
+	textarea {
+		width: 400px;
+		height: 50px;
+	}
+</style>

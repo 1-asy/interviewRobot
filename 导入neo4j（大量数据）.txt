@@ -1,0 +1,1 @@
+neo4j-admin import --database graph.db --nodes=../import/entity.csv --relationships=../import/relation.csv --ignore-extra-columns=true --skip-duplicate-nodes=true --skip-bad-relationships=true
